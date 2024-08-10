@@ -9,38 +9,37 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.lawnchair.lawnicons.ui.components.core.ListRow
 import app.lawnchair.lawnicons.ui.components.core.placeholder.PlaceholderHighlight
-import app.lawnchair.lawnicons.ui.components.core.placeholder.material.fade
-import app.lawnchair.lawnicons.ui.components.core.placeholder.material.placeholder
+import app.lawnchair.lawnicons.ui.components.core.placeholder.fade
+import app.lawnchair.lawnicons.ui.components.core.placeholder.placeholder
 import app.lawnchair.lawnicons.ui.theme.LawniconsTheme
-import app.lawnchair.lawnicons.ui.util.Elevation
-import app.lawnchair.lawnicons.ui.util.surfaceColorAtElevation
+import app.lawnchair.lawnicons.ui.util.PreviewLawnicons
 
 @Composable
 fun ContributorRowPlaceholder(
+    modifier: Modifier = Modifier,
     first: Boolean = false,
     last: Boolean = false,
     divider: Boolean = true,
 ) {
-    Row {
+    Row(
+        modifier = modifier,
+    ) {
         ListRow(
             divider = divider,
             background = true,
             first = first,
             last = last,
-            icon = {
+            startIcon = {
                 Box(
                     modifier = Modifier
                         .size(32.dp)
                         .placeholder(
                             visible = true,
                             shape = CircleShape,
-                            color = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                Elevation.Level4,
-                            ),
+                            color = MaterialTheme.colorScheme.surfaceContainerHighest,
                             highlight = PlaceholderHighlight.fade(),
                         ),
                 )
@@ -52,9 +51,7 @@ fun ContributorRowPlaceholder(
                         .height(18.dp)
                         .placeholder(
                             visible = true,
-                            color = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                Elevation.Level4,
-                            ),
+                            color = MaterialTheme.colorScheme.surfaceContainerHighest,
                             highlight = PlaceholderHighlight.fade(),
                         ),
                 )
@@ -63,9 +60,9 @@ fun ContributorRowPlaceholder(
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLawnicons
 @Composable
-fun ContributorRowPlaceholderPreview() {
+private fun ContributorRowPlaceholderPreview() {
     LawniconsTheme {
         ContributorRowPlaceholder()
     }

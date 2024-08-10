@@ -1,12 +1,19 @@
 package app.lawnchair.lawnicons.ui.destination
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ContentAlpha
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,37 +21,79 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.lawnicons.BuildConfig
 import app.lawnchair.lawnicons.R
 import app.lawnchair.lawnicons.ui.components.ContributorRow
-import app.lawnchair.lawnicons.ui.components.ExternalLinkRow
+import app.lawnchair.lawnicons.ui.components.IconLink
 import app.lawnchair.lawnicons.ui.components.core.Card
 import app.lawnchair.lawnicons.ui.components.core.LawniconsScaffold
 import app.lawnchair.lawnicons.ui.components.core.SimpleListRow
+import app.lawnchair.lawnicons.ui.theme.LawniconsTheme
+import app.lawnchair.lawnicons.ui.util.Constants
 import app.lawnchair.lawnicons.ui.util.Contributor
-import app.lawnchair.lawnicons.ui.util.Destinations
 import app.lawnchair.lawnicons.ui.util.ExternalLink
+import app.lawnchair.lawnicons.ui.util.PreviewLawnicons
 import app.lawnchair.lawnicons.util.appIcon
 
 private val externalLinks = listOf(
     ExternalLink(
-        name = "GitHub",
-        url = "https://github.com/LawnchairLauncher/lawnicons",
+        iconResId = R.drawable.github_foreground,
+        name = R.string.github,
+        url = Constants.GITHUB,
     ),
     ExternalLink(
-        name = "Icon Request Form",
-        url = "https://forms.gle/Fx8vZAiWdW1Tyjo57",
+        iconResId = R.drawable.icon_request_app,
+        name = R.string.request_form,
+        url = Constants.ICON_REQUEST_FORM,
     ),
 )
 
 private val coreContributors = listOf(
     Contributor(
-        name = "paphonb",
+        name = "Suphon T.",
         username = "paphonb",
         photoUrl = "https://avatars.githubusercontent.com/u/8080853",
-        socialUrl = "https://twitter.com/paphonb",
+        socialUrl = "https://x.com/paphonb",
+        descriptionRes = R.string.contribution_core,
+    ),
+    Contributor(
+        name = "SuperDragonXD",
+        username = "SuperDragonXD",
+        photoUrl = "https://avatars.githubusercontent.com/u/70206496",
+        socialUrl = "https://github.com/SuperDragonXD",
+        descriptionRes = R.string.contribution_core,
+    ),
+    Contributor(
+        name = "Patryk Radziszewski",
+        username = "Chefski",
+        photoUrl = "https://avatars.githubusercontent.com/u/100310118",
+        socialUrl = "https://github.com/Chefski",
+        descriptionRes = R.string.contribution_icons,
+    ),
+    Contributor(
+        name = "Gleb",
+        username = "x9136",
+        photoUrl = "https://avatars.githubusercontent.com/u/60105060",
+        socialUrl = "https://github.com/x9136",
+        descriptionRes = R.string.contribution_icons,
+    ),
+    Contributor(
+        name = "Grabster",
+        username = "Grabstertv",
+        photoUrl = "https://avatars.githubusercontent.com/u/49114212",
+        socialUrl = "https://x.com/grabstertv",
+        descriptionRes = R.string.contribution_icons,
+    ),
+    Contributor(
+        name = "Zongle Wang",
+        username = "Goooler",
+        photoUrl = "https://avatars.githubusercontent.com/u/10363352",
+        socialUrl = "https://androiddev.social/@Goooler",
+        descriptionRes = R.string.contribution_deps,
     ),
 )
 
@@ -52,7 +101,7 @@ private val specialThanks = listOf(
     Contributor(
         name = "Eatos",
         photoUrl = "https://avatars.githubusercontent.com/u/52837599",
-        socialUrl = "https://twitter.com/eatosapps",
+        socialUrl = "https://x.com/eatosapps",
         descriptionRes = R.string.special_thanks_icon,
     ),
     Contributor(
@@ -64,15 +113,31 @@ private val specialThanks = listOf(
 )
 
 @Composable
-fun About(onBack: () -> Unit, onNavigate: (String) -> Unit, isExpandedScreen: Boolean) {
+fun About(
+    onBack: () -> Unit,
+    onNavigateToContributors: () -> Unit,
+    onNavigateToAcknowledgements: () -> Unit,
+    isExpandedScreen: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
 
     LawniconsScaffold(
+        modifier = modifier,
         title = stringResource(id = R.string.about),
         onBack = onBack,
         isExpandedScreen = isExpandedScreen,
     ) { paddingValues ->
-        LazyColumn(modifier = Modifier.padding(paddingValues)) {
+        val layoutDirection = LocalLayoutDirection.current
+        val verticalListPadding = 8.dp
+        LazyColumn(
+            contentPadding = PaddingValues(
+                start = paddingValues.calculateStartPadding(layoutDirection),
+                top = paddingValues.calculateTopPadding() + verticalListPadding,
+                end = paddingValues.calculateEndPadding(layoutDirection),
+                bottom = paddingValues.calculateBottomPadding() + verticalListPadding,
+            ),
+        ) {
             item {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,11 +148,15 @@ fun About(onBack: () -> Unit, onNavigate: (String) -> Unit, isExpandedScreen: Bo
                             bottom = 32.dp,
                         ),
                 ) {
-                    Image(
-                        bitmap = context.appIcon().asImageBitmap(),
-                        contentDescription = stringResource(id = R.string.app_name),
-                        modifier = Modifier.size(72.dp),
-                    )
+                    if (LocalInspectionMode.current) {
+                        Icon(Icons.Rounded.Star, contentDescription = null, modifier = Modifier.size(72.dp))
+                    } else {
+                        Image(
+                            bitmap = context.appIcon().asImageBitmap(),
+                            contentDescription = stringResource(id = R.string.app_name),
+                            modifier = Modifier.size(72.dp),
+                        )
+                    }
                     Text(
                         text = stringResource(id = R.string.app_name),
                         style = MaterialTheme.typography.titleLarge,
@@ -97,19 +166,22 @@ fun About(onBack: () -> Unit, onNavigate: (String) -> Unit, isExpandedScreen: Bo
                     Text(
                         text = stringResource(id = R.string.version_x, BuildConfig.VERSION_NAME),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(
-                            alpha = ContentAlpha.medium,
-                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
             item {
-                Card(label = "External Links") {
-                    externalLinks.mapIndexed { index, it ->
-                        ExternalLinkRow(
-                            name = it.name,
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    externalLinks.forEach {
+                        IconLink(
+                            iconResId = it.iconResId,
+                            label = stringResource(id = it.name),
                             url = it.url,
-                            divider = index != externalLinks.lastIndex,
                         )
                     }
                 }
@@ -122,6 +194,7 @@ fun About(onBack: () -> Unit, onNavigate: (String) -> Unit, isExpandedScreen: Bo
                             photoUrl = it.photoUrl,
                             profileUrl = it.socialUrl,
                             divider = index != coreContributors.lastIndex,
+                            description = it.descriptionRes?.let { stringResource(id = it) },
                         )
                     }
                 }
@@ -129,7 +202,7 @@ fun About(onBack: () -> Unit, onNavigate: (String) -> Unit, isExpandedScreen: Bo
             item {
                 Card(modifier = Modifier.padding(top = 16.dp)) {
                     SimpleListRow(
-                        onClick = { onNavigate(Destinations.CONTRIBUTORS) },
+                        onClick = onNavigateToContributors,
                         label = stringResource(id = R.string.see_all_contributors),
                         divider = false,
                     )
@@ -152,6 +225,41 @@ fun About(onBack: () -> Unit, onNavigate: (String) -> Unit, isExpandedScreen: Bo
                     }
                 }
             }
+            item {
+                Card(modifier = Modifier.padding(top = 16.dp)) {
+                    SimpleListRow(
+                        onClick = onNavigateToAcknowledgements,
+                        label = stringResource(id = R.string.acknowledgements),
+                        divider = false,
+                    )
+                }
+            }
         }
+    }
+}
+
+@PreviewLawnicons
+@Composable
+private fun AboutPreview() {
+    LawniconsTheme {
+        About(
+            {},
+            {},
+            {},
+            false,
+        )
+    }
+}
+
+@PreviewLawnicons
+@Composable
+private fun AboutPreviewExpanded() {
+    LawniconsTheme {
+        About(
+            {},
+            {},
+            {},
+            true,
+        )
     }
 }

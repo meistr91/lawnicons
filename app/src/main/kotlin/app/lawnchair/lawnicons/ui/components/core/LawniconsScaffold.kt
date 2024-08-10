@@ -6,15 +6,18 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import app.lawnchair.lawnicons.ui.components.home.ClickableIcon
+import app.lawnchair.lawnicons.ui.theme.LawniconsTheme
+import app.lawnchair.lawnicons.ui.util.PreviewLawnicons
 import app.lawnchair.lawnicons.ui.util.toPaddingValues
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +26,7 @@ fun LawniconsScaffold(
     title: String,
     onBack: () -> Unit,
     isExpandedScreen: Boolean,
+    modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     var scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -31,15 +35,15 @@ fun LawniconsScaffold(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopBarWithInsets(
+            TopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = title,
                 navigationIcon = {
                     ClickableIcon(
                         onClick = onBack,
-                        imageVector = Icons.Rounded.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                         size = 40.dp,
                         modifier = Modifier.padding(horizontal = 4.dp),
                     )
@@ -61,6 +65,46 @@ fun LawniconsScaffold(
                     Modifier
                 },
             ),
-        ) { content(it) }
+        ) {
+            content(it)
+        }
+    }
+}
+
+@PreviewLawnicons
+@Composable
+private fun LawniconsScaffoldPreview() {
+    LawniconsTheme {
+        LawniconsScaffold(
+            title = "Example small bar",
+            onBack = { },
+            isExpandedScreen = false,
+            content = {
+                Box(
+                    modifier = Modifier.padding(it),
+                ) {
+                    Text("Hello World")
+                }
+            },
+        )
+    }
+}
+
+@PreviewLawnicons
+@Composable
+private fun LawniconsScaffoldExpandedPreview() {
+    LawniconsTheme {
+        LawniconsScaffold(
+            title = "Example small bar",
+            onBack = { },
+            isExpandedScreen = true,
+            content = {
+                Box(
+                    modifier = Modifier.padding(it),
+                ) {
+                    Text("Hello World")
+                }
+            },
+        )
     }
 }

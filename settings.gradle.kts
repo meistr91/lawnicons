@@ -1,27 +1,41 @@
 pluginManagement {
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         gradlePluginPortal()
     }
 }
 
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
-    id("com.gradle.enterprise") version "3.15.1"
+    id("com.gradle.develocity") version "3.17.6"
 }
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-        publishAlways()
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+        // TODO: workaround for https://github.com/gradle/gradle/issues/22879.
+        val isCI = providers.environmentVariable("CI").isPresent
+        publishing.onlyIf { isCI }
     }
 }
 
 dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
         maven("https://jitpack.io")
     }
@@ -30,6 +44,7 @@ dependencyResolutionManagement {
 rootProject.name = "Lawnicons"
 
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(
     ":app",
